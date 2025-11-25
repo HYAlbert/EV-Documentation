@@ -7,7 +7,7 @@
 
 ---
 
-## Table of Contents
+## <span style="color:#0b3d91;font-size:1.3em;">Table of Contents</span>
 
 <details>
 <summary>Click to expand</summary>
@@ -56,7 +56,7 @@
 
 ---
 
-## Team Overview
+## <span style="color:#0b3d91;font-size:1.3em;">Team Overview</span>
 
 ### History
 
@@ -65,14 +65,14 @@ Kilozott is the competition car that was designed in the 2024-2025 cycle.
 
 ---
 
-## Electronics-Relevant Rules
+## <span style="color:#0b3d91;font-size:1.3em;">Electronics-Relevant Rules</span>
 
 ### Motivation
 The car needs to be rules-compliant in order to race in the competition. Before the dynamic events, there are technical inspections that scrutinize every aspect of the car to ensure it is safe and adheres to the competition rules for that year. If any component fails, then the team is prohibited from racing. This includes a “rain test”, which sprays the car with water to ensure components are watertight.
 
 Kilozott’s electronics were designed based on the 2024-2025 rules. Changes may be needed to become compliant with 2025-2026 rules.
 
-**Download 2026 rules here:** [FSAE Online Documents](https://www.fsaeonline.com/cdsweb/gen/DownloadDocument.aspx?DocumentID=278fd4d7-aa27-4e33-bc4a-090148e662a0)
+**Download 2026 rules here:** [FSAE_Rules_2026_V1.pdf](BuildBookSupport/FSAE_Rules_2026_V1.pdf)
 
 ### Key Changes for 2026
 > **ACTION ITEM:** Copy paste key changes and highlight differences. For each change explain what that might imply & link relevant sections.
@@ -87,7 +87,7 @@ To ensure complete compliance, always refer to the comprehensive FSAE rulebook.
 
 ---
 
-## Electronics Functionality
+## <span style="color:#0b3d91;font-size:1.3em;">Electronics Functionality</span>
 
 ### System Overview
 We break the electronics system down into 5 main categories that address different scopes of the overall functionality:
@@ -100,17 +100,74 @@ We break the electronics system down into 5 main categories that address differe
 
 ### Brief Subsystem Overview
 
-- **Tractive System Operations** – high-voltage power path from accumulator to motor.
-- **Tractive System Safety** – mandated protection, monitoring, and shutdown circuits.
-- **Driver Interface** – anything a driver touches, sees, or hears during operation.
-- **Harnessing & Power Distribution** – GLV power, bus architecture, and wiring practices.
-- **Cooling** – thermal management for electronics and high-power components.
+<details>
+<summary><strong>Tractive System Operations</strong> – high-voltage power path from accumulator to motor.</summary>
+
+Tractive System Operations covers every component used to deliver tractive energy from the accumulator to the inverter and ultimately to the motor.
+
+- [Accumulator Battery Pack](#accumulator-battery-pack)
+- [Precharge / Discharge Circuit](#precharge--discharge-circuit)
+- [High-Voltage Power Delivery Components](#high-voltage-power-delivery-components)
+- [Inverter](#inverter)
+- [Motor](#motor)
+
+</details>
+
+<details>
+<summary><strong>Tractive System Safety</strong> – mandated protection, monitoring, and shutdown circuits.</summary>
+
+Tractive System Safety includes all FSAE-required hardware that monitors, protects, or shuts down the tractive system when a fault occurs.
+
+- [Shutdown System](#shutdown-system)
+- [Shutdown Latch](#shutdown-latch)
+- [Brake System Plausibility Device](#brake-system-plausibility-device)
+- [Battery Management System](#battery-management-system)
+- [Insulation Monitoring Device](#insulation-monitoring-device)
+- [Emergency Stops & Switches](#emergency-stops--switches)
+- [Interlocks](#interlocks)
+
+</details>
+
+<details>
+<summary><strong>Driver Interface</strong> – everything a driver touches, sees, or hears during operation.</summary>
+
+Driver Interface spans the feedback and controls presented to the driver (TSSI, RTDS, dashboards, pedals, CAN-fed signals for brakes, accelerator, wheel speed, etc.).
+
+- [Tractive System Status Indicator](#tractive-system-status-indicator)
+- [Ready-to-Drive Sound](#ready-to-drive-sound)
+- [Dashboard & Displays](#dashboard--displays)
+- [Accelerator Pedal Position Sensors](#accelerator-pedal-position-sensors)
+- [Central Control Module](#central-control-module)
+- [Sensor Networks](#sensor-networks)
+
+</details>
+
+<details>
+<summary><strong>Harnessing & Power Distribution</strong> – GLV power, bus architecture, and wiring practices.</summary>
+
+This category documents low-voltage power delivery, CAN distribution, and subsystem wiring conventions that keep signals reliable.
+
+- [GLV System](#glv-system)
+- [Power Distribution Board](#power-distribution-board)
+- [CAN Bus Communication](#can-bus-communication)
+- [Subsystem Wiring](#subsystem-wiring)
+
+</details>
+
+<details>
+<summary><strong>Cooling</strong> – thermal management for electronics and high-power components.</summary>
+
+Cooling content and component list are still being developed.
+
+- [Cooling Components](#cooling-components) *(to be completed)*
+
+</details>
 
 Detailed documentation for each area lives in the dedicated sections that follow.
 
 ---
 
-## Tractive System Operations
+## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Operations</span>
 
 ### Accumulator Battery Pack
 Document pack layout, cell chemistry, critical sensors, and how tractive and GLV domains interface. Include links to schematics, AIR wiring, and service procedures.
@@ -129,7 +186,7 @@ Include nameplate data, sensor feedback (resolver/Halls), cooling needs, and mec
 
 ---
 
-## Tractive System Safety
+## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Safety</span>
 
 ### Shutdown System
 Map the complete safety loop path, including connectors, voltage levels, and triggers that open AIRs.
@@ -154,7 +211,7 @@ Describe service interlocks (TSMS, GLV enable, lid switches) and how they guaran
 
 ---
 
-## Driver Interface
+## <span style="color:#0b3d91;font-size:1.3em;">Driver Interface</span>
 
 ### Tractive System Status Indicator
 Summarize LED states, logic inputs, and regulatory requirements (steady green vs flashing red).
@@ -176,7 +233,7 @@ List CAN IDs, sampling rates, and critical signals (brakes, wheel speed, steerin
 
 ---
 
-## Harnessing and Power Distribution
+## <span style="color:#0b3d91;font-size:1.3em;">Harnessing and Power Distribution</span>
 
 ### GLV System
 Describe GLV battery specs, protection circuitry, grounding strategy, and maintenance notes.
@@ -192,14 +249,14 @@ Capture harness segmentation, labeling conventions, strain relief methods, and s
 
 ---
 
-## Cooling
+## <span style="color:#0b3d91;font-size:1.3em;">Cooling</span>
 
 ### Cooling Components
 List pumps, radiators, manifolds, and sensors dedicated to electronics cooling. Include control logic, coolant specifications, and inspection intervals.
 
 ---
 
-## Appendix
+## <span style="color:#0b3d91;font-size:1.3em;">Appendix</span>
 
 ### Learning Resources
 * **Useful links for brushing up on relevant topics:** [Insert Links]
