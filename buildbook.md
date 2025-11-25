@@ -1,9 +1,14 @@
 # Kilozott Electronics Build Book 2025
 
 **Contributors:**
+<details>
+<summary>Click to expand</summary>
+
 * Gabriel Schoene – ‘26 (gabeemail@email.com)
 * Natalie Perrochon – ‘26 (perrochon.natalie@gmail.com)
 * Albert Huang - '27 (alberyh1@uci.edu)
+
+</details>
 
 ---
 
@@ -25,7 +30,7 @@
 - [Tractive System Operations](#tractive-system-operations)
   - [Accumulator Battery Pack](#accumulator-battery-pack)
   - [Precharge / Discharge Circuit](#precharge--discharge-circuit)
-  - [High-Voltage Power Delivery](#high-voltage-power-delivery-components)
+  - [High-Voltage Power Delivery Components](#high-voltage-power-delivery-components)
   - [Inverter](#inverter)
   - [Motor](#motor)
 - [Tractive System Safety](#tractive-system-safety)
@@ -169,11 +174,10 @@ Detailed documentation for each area lives in the dedicated sections that follow
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Operations</span>
 
-### Accumulator Battery Pack
-Document pack layout, cell chemistry, critical sensors, and how tractive and GLV domains interface. Include links to schematics, AIR wiring, and service procedures.
+<details>
+<summary><strong>Accumulator Battery Pack</strong></summary>
 
-### Precharge / Discharge Circuit
-Capture resistor sizing, timing logic, controller firmware, and test procedures that verify current ramps and discharge compliance.
+Document pack layout, cell chemistry, critical sensors, and how tractive and GLV domains interface. Include links to schematics, AIR wiring, and service procedures.
 
 #### Overview
 > _To be completed._
@@ -202,20 +206,151 @@ Capture resistor sizing, timing logic, controller firmware, and test procedures 
 #### Notes for Iteration
 > _To be completed._
 
-### High-Voltage Power Delivery Components
+</details>
+
+<details>
+<summary><strong>Precharge / Discharge Circuit</strong></summary>
+
+Capture resistor sizing, timing logic, controller firmware, and test procedures that verify current ramps and discharge compliance.
+
+#### Overview
+The Precharge Board manages the critical startup sequence connecting high voltage (HV) from the accumulator to the inverter. Its primary purpose is to prevent massive inrush currents—which could weld contactors or damage components—by slowly charging the inverter’s large DC-link capacitors before the main Accumulator Isolation Relays (AIRs) close.
+
+#### Functionality
+**Startup Sequence:**
+1.  **Initialization:** The car powers on; the PDB provides 12V to the system, and the Central Control Module (CCM) initiates communication via CAN.
+2.  **Safety Check:** The Manual Service Disconnect (MSD) must be closed, and the Safety Daisy Chain (Shutdown Loop) must be intact to enable the board.
+3.  **Voltage Monitoring:** The board continuously measures both the Accumulator voltage and the Tractive System (inverter) voltage.
+4.  **Precharge Phase:** The board energizes the precharge relay. Current flows through a limiting resistor, gently charging the inverter capacitors.
+5.  **Connection Completion:** Once the inverter voltage reaches ~90–95% of the accumulator voltage, the board signals the main AIRs to close.
+6.  **Ready State:** The HV-IL sequence completes, fully energizing the Tractive System for operation.
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>High-Voltage Power Delivery Components</strong></summary>
+
 List contactors, isolation relays, HV cabling, shielding, and any inline measurement devices used to deliver power downstream.
 
-### Inverter
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Inverter</strong></summary>
+
 Summarize inverter model, configuration parameters, CAN controls, and integration with the central control module.
 
-### Motor
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Motor</strong></summary>
+
 Include nameplate data, sensor feedback (resolver/Halls), cooling needs, and mechanical mounting notes.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
 
 ---
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Safety</span>
 
-### Shutdown System
+<details>
+<summary><strong>Shutdown System</strong></summary>
+
 Map the complete safety loop path, including connectors, voltage levels, and triggers that open AIRs.
 
 #### Overview
@@ -245,7 +380,11 @@ Map the complete safety loop path, including connectors, voltage levels, and tri
 #### Notes for Iteration
 > _To be completed._
 
-### Shutdown Latch
+</details>
+
+<details>
+<summary><strong>Shutdown Latch</strong></summary>
+
 Explain the latching logic, reset behavior, and compliance considerations per FSAE rules.
 
 #### Overview
@@ -275,7 +414,11 @@ Explain the latching logic, reset behavior, and compliance considerations per FS
 #### Notes for Iteration
 > _To be completed._
 
-### Brake System Plausibility Device
+</details>
+
+<details>
+<summary><strong>Brake System Plausibility Device</strong></summary>
+
 Provide thresholds, logic flow, and fault-handling steps that ensure throttle/brake conflicts are mitigated.
 
 #### Overview
@@ -305,24 +448,12 @@ Provide thresholds, logic flow, and fault-handling steps that ensure throttle/br
 #### Notes for Iteration
 > _To be completed._
 
-### Battery Management System
+</details>
+
+<details>
+<summary><strong>Battery Management System</strong></summary>
+
 Document pack monitoring, balancing strategy, CAN messaging, and fault escalation to the shutdown loop.
-
-### Insulation Monitoring Device
-Capture IMD thresholds, self-test requirements, and how faults propagate to TSSI/CCM.
-
-### Emergency Stops & Switches
-List mechanical locations, wiring diagrams, and inspection steps for both cockpit and external E-stops.
-
-### Interlocks
-Describe service interlocks (TSMS, GLV enable, lid switches) and how they guarantee safe access to HV hardware.
-
----
-
-## <span style="color:#0b3d91;font-size:1.3em;">Driver Interface</span>
-
-### Tractive System Status Indicator
-Summarize LED states, logic inputs, and regulatory requirements (steady green vs flashing red).
 
 #### Overview
 > _To be completed._
@@ -351,16 +482,250 @@ Summarize LED states, logic inputs, and regulatory requirements (steady green vs
 #### Notes for Iteration
 > _To be completed._
 
-### Ready-to-Drive Sound
+</details>
+
+<details>
+<summary><strong>Insulation Monitoring Device</strong></summary>
+
+Capture IMD thresholds, self-test requirements, and how faults propagate to TSSI/CCM.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Emergency Stops & Switches</strong></summary>
+
+List mechanical locations, wiring diagrams, and inspection steps for both cockpit and external E-stops.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Interlocks</strong></summary>
+
+Describe service interlocks (TSMS, GLV enable, lid switches) and how they guarantee safe access to HV hardware.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+---
+
+## <span style="color:#0b3d91;font-size:1.3em;">Driver Interface</span>
+
+<details>
+<summary><strong>Tractive System Status Indicator</strong></summary>
+
+Summarize LED states, logic inputs, and regulatory requirements (steady green vs flashing red).
+
+#### Overview
+The Tractive System Status Indicator (TSSI) provides visual feedback on the safety status of the vehicle's critical monitoring systems. Its purpose is to output a **static green LED** if both the Battery Management System (BMS) and Insulation Monitoring Device (IMD) report no faults. If either system detects a fault, the TSSI drives a **flashing red LED** (using a 555 timer) to alert the driver and team, in compliance with FSAE regulations.
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+-   **Logic Implementation:** Uses MOSFETs to construct an AND gate logic circuit that combines fault signals. Pull-up resistors are used for the BMS input since its voltage signal is floating.
+-   **Flashing Circuit:** A 555 timer is configured to output a **5 Hz square wave with a 50% duty cycle**. This signal triggers the red LED to flash instead of remaining static, satisfying FSAE regulatory requirements for fault indication.
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+-   **Logic Optimization:** Switch towards a gate-induced logic system to reduce board space (replacing discrete MOSFETs) and potentially improve timing.
+-   **Simplify Logic:** Remove redundant "inverter-then-inverter" logic stages.
+-   **Output Flexibility:** Add more output options beyond the current configuration.
+-   **Switching Config:** Confirm whether to continue using power-ground switching for the LEDs.
+-   **Input/Output Protection:** Add safety components such as fuses, TVS diodes, and capacitors.
+-   **Efficiency:** Investigate parts with lower power consumption to improve overall efficiency.
+
+</details>
+
+<details>
+<summary><strong>Ready-to-Drive Sound</strong></summary>
+
 Detail the audio hardware, trigger logic, and timing that signals TS-ready status to the driver.
 
-### Dashboard & Displays
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Dashboard & Displays</strong></summary>
+
 Outline display hardware, UI layout, data logging, and firmware hooks to the CCM.
 
-### Accelerator Pedal Position Sensors
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Accelerator Pedal Position Sensors</strong></summary>
+
 Document redundant APPS channels, calibration process, and plausibility checks.
 
-### Central Control Module
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Central Control Module</strong></summary>
+
 Capture firmware responsibilities, CAN interface details, and power sequencing logic.
 
 #### Overview
@@ -390,17 +755,83 @@ Capture firmware responsibilities, CAN interface details, and power sequencing l
 #### Notes for Iteration
 > _To be completed._
 
-### Sensor Networks
+</details>
+
+<details>
+<summary><strong>Sensor Networks</strong></summary>
+
 List CAN IDs, sampling rates, and critical signals (brakes, wheel speed, steering, etc.) that inform driver feedback.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
 
 ---
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Harnessing and Power Distribution</span>
 
-### GLV System
+<details>
+<summary><strong>GLV System</strong></summary>
+
 Describe GLV battery specs, protection circuitry, grounding strategy, and maintenance notes.
 
-### Power Distribution Board
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Power Distribution Board</strong></summary>
+
 Document outputs, fuse/CB sizing, current sensing, and diagnostic interfaces.
 
 #### Overview
@@ -430,18 +861,107 @@ Document outputs, fuse/CB sizing, current sensing, and diagnostic interfaces.
 #### Notes for Iteration
 > _To be completed._
 
-### CAN Bus Communication
+</details>
+
+<details>
+<summary><strong>CAN Bus Communication</strong></summary>
+
 Summarize bus topology, connector standards, termination strategy, and debugging workflows.
 
-### Subsystem Wiring
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
+
+<details>
+<summary><strong>Subsystem Wiring</strong></summary>
+
 Capture harness segmentation, labeling conventions, strain relief methods, and shielding or twisted-pair requirements.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
 
 ---
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Cooling</span>
 
-### Cooling Components
+<details>
+<summary><strong>Cooling Components</strong></summary>
+
 List pumps, radiators, manifolds, and sensors dedicated to electronics cooling. Include control logic, coolant specifications, and inspection intervals.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
+</details>
 
 ---
 
