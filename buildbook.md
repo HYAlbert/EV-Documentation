@@ -251,9 +251,9 @@ graph TD
     subgraph HV_Path [High Voltage Path]
         ACC[Accumulator HV+]
         TS[Tractive System HV+]
-        K3[Relay K3 (Precharge Control)]
-        SPDT[SPDT Relay (Path Select)]
-        RES[Precharge/Discharge Resistor (1000Ω)]
+        K3[Relay K3 Precharge Control]
+        SPDT[SPDT Relay]
+        RES[Precharge/Discharge Resistor 1000Ω]
         
         ACC --> K3
         K3 --> SPDT
@@ -264,8 +264,8 @@ graph TD
 
     subgraph Control [Control Logic]
         MCU[Microcontroller]
-        VFC1[V/F Converter (Acc Voltage)]
-        VFC2[V/F Converter (TS Voltage)]
+        VFC1[V/F Converter Acc Voltage]
+        VFC2[V/F Converter TS Voltage]
         
         VFC1 -->|Frequency| MCU
         VFC2 -->|Frequency| MCU
