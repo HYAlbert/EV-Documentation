@@ -43,6 +43,7 @@
   - [Interlocks](#interlocks)
 - [Driver Interface](#driver-interface)
   - [Tractive System Status Indicator](#tractive-system-status-indicator)
+  - [TS RTM (Ready-to-Move)](#ts-rtm)
   - [Ready-to-Drive Sound](#ready-to-drive-sound)
   - [Dashboard & Displays](#dashboard--displays)
   - [Accelerator Pedal Position Sensors](#accelerator-pedal-position-sensors)
@@ -139,6 +140,7 @@ Tractive System Safety includes all FSAE-required hardware that monitors, protec
 Driver Interface spans the feedback and controls presented to the driver (TSSI, RTDS, dashboards, pedals, CAN-fed signals for brakes, accelerator, wheel speed, etc.).
 
 - [Tractive System Status Indicator](#tractive-system-status-indicator)
+- [TS RTM (Ready-to-Move)](#ts-rtm)
 - [Ready-to-Drive Sound](#ready-to-drive-sound)
 - [Dashboard & Displays](#dashboard--displays)
 - [Accelerator Pedal Position Sensors](#accelerator-pedal-position-sensors)
@@ -468,22 +470,47 @@ For each fault source (IMD, BMS, BSPD), perform the following:
 Provide thresholds, logic flow, and fault-handling steps that ensure throttle/brake conflicts are mitigated.
 
 #### Overview
-> _To be completed._
+The **Brake System Plausibility Device (BSPD)** is a fully analog, non-programmable safety circuit that monitors the brake sensor and a current sensor. It asserts a **BSPD_FAULT** output when it detects unsafe or implausible conditions.
+
+The circuit is partitioned into four main stages:
+1.  **Stage 1 – Open Circuit Detection:** Detects if sensor signals indicate an open circuit or broken wire.
+2.  **Stage 2 – Short Circuit Detection:** Intended to detect shorted sensor lines. *(Note: Current implementation likely needs redesign).*
+3.  **Stage 3 – Hard Brake Detection:** Detects simultaneous high braking and high current (acceleration) signals.
+4.  **Stage 4 – Logic and I/O:** ORs all faults, inverts the signal, and drives the open-drain fault output.
+
+The design relies on comparators, logic gates, and discrete passives—rather than firmware—to strictly meet non-programmability and transparency requirements.
 
 #### Functionality
-> _To be completed._
+**Inputs:**
+-   **Brake Sensor:** Analog input representing brake pedal position (assumed 0–5V range).
+-   **Current Sensor:** Analog input representing motor/inverter current or throttle-related current (assumed 0–5V range).
+
+**Output:**
+-   **BSPD_FAULT:** (Connector J1)
+    -   *Normal:* High-impedance (open-drain); pulled up externally.
+    -   *Fault:* Driven logic LOW, indicating a safety violation.
+
+**Fault Conditions Addressed:**
+-   **Open-Circuit (Stage 1):** Monitors brake/current signals for disconnects.
+-   **Short-Circuit (Stage 2):** Monitors for shorts (requires validation/redesign).
+-   **Hard Brake (Stage 3):** Triggers if both Brake and Current signals exceed thresholds simultaneously. Uses an RC filter (~70ms time constant) to ignore brief transients.
+-   **Aggregation (Stage 4):** Combines all faults; asserts active-low output on BSPD_FAULT.
 
 #### System Block Diagram
 > _To be completed._
 
 #### Schematic / PCB
-> _To be completed._
+![BSPD Schematic](BuildBookSupport/BuildBookImages/BSPDSchematic.png)
 
 #### Subcomponents
 > _To be completed._
 
 #### Key Design Decisions
-> _To be completed._
+-   **Fully Analog / Non-Programmable:** Implemented entirely with comparators and discrete logic for robustness and rule compliance.
+-   **Stage-Based Architecture:** Modular design (Open, Short, Hard Brake) simplifies debugging; logical OR ensures any single fault triggers safety.
+-   **Adjustable Thresholds:** Four potentiometers allow fine-tuning of reference voltages for Open/Short/Brake-High/Current-High thresholds. Documentation advises using a "detection margin" to back off setpoints.
+-   **RC Filtering:** A ~70ms RC time constant on the Hard Brake output prevents false positives from noise or transient overlaps.
+-   **Open-Drain Output:** Drives low on fault, floating otherwise—ideal for OR-ing multiple open-drain signals in a shared shutdown chain.
 
 #### Mechanical Interface
 > _To be completed._
@@ -492,7 +519,8 @@ Provide thresholds, logic flow, and fault-handling steps that ensure throttle/br
 > _To be completed._
 
 #### Notes for Iteration
-> _To be completed._
+-   **Potentiometer Robustness:** Safety thresholds depend on wiper positions. Consider replacing single pots with fixed resistor networks + small trimmers to reduce failure risk.
+-   **Test Points:** Add clearly labeled test pads for reference voltages on the PCB silkscreen.
 
 </details>
 
@@ -672,6 +700,88 @@ The Tractive System Status Indicator (TSSI) provides visual feedback on the safe
 -   **Switching Config:** Confirm whether to continue using power-ground switching for the LEDs.
 -   **Input/Output Protection:** Add safety components such as fuses, TVS diodes, and capacitors.
 -   **Efficiency:** Investigate parts with lower power consumption to improve overall efficiency.
+
+</details>
+
+<div id="ts-rtm"></div>
+<details>
+<summary><strong>TS RTM (Ready-to-Move)</strong></summary>
+
+The TS RTM board is a high-voltage monitor and indicator that signals when the tractive system is energized (>60V).
+
+#### Overview
+The **TS RTM (Tractive System Ready-To-Move)** board is a critical safety indicator. Its primary job is to monitor the high-voltage (HV) bus and drive a flashing AMBER indicator (and a speaker Ready to Move Sound) whenever the voltage exceeds **60 V**. This warns anyone near the vehicle that the tractive system is energized.
+
+Crucially, it maintains **galvanic isolation** between the high-voltage domain and the low-voltage indicator/logic domain, using an isolated 12V–12V DC-DC converter and an optocoupler.
+
+#### Functionality
+**Inputs:**
+-   **HighVoltage+ / HighVoltage−:** High-voltage sense inputs (up to ≈460 V).
+-   **12V:** Low-voltage supply input (GLV 12 V).
+-   **GND:** Low-voltage ground.
+
+**Outputs:**
+-   **AMBER LED:** Main visual indicator, designed to flash at ~5 Hz when HV > 60 V.
+-   **SPEAKER:** Intended audible output (currently not implemented; may rely solely on AMBER LED).
+
+**Behavior:**
+1.  **Scaling:** The HV input is scaled down by a resistive divider (approx. 460V → 12V).
+2.  **Comparison:** A comparator checks this scaled voltage ($V_{IN}$) against a bias reference ($V_{BIAS}$) set by a potentiometer.
+3.  **Trigger:**
+    -   If $V_{IN} > V_{BIAS}$ (interpreted as HV > 60 V):
+    -   Comparator output goes HIGH.
+    -   NMOS network turns on and drives an optocoupler.
+4.  **Indication:** The optocoupler triggers a 555 timer on the isolated low-voltage side. The 555 is configured as an astable oscillator (~5 Hz), which flashes the AMBER LED.
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+![TS RTM Schematic](BuildBookSupport/BuildBookImages/TSRTMSchematic.png)
+
+![TS RTM PCB](BuildBookSupport/BuildBookImages/TSRTMPCB.png)
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+-   **60 V Threshold:** The voltage divider and comparator trip point are tuned so the indicator triggers exactly when HV exceeds 60 V, per safety regulations.
+-   **High-Value Resistive Divider:** Uses **540 kΩ** resistors to minimize current draw from the HV bus and keep power dissipation safely within rating (0.25 W), even at several hundred volts.
+-   **Strong Isolation Strategy:** Combines an isolated 12V–12V DC-DC converter (PS1) with an optocoupler (4N35) to ensure the HV domain is doubly isolated from the LV indicator circuitry.
+-   **Adjustable Bias:** A potentiometer (RV1) allows field calibration of the exact 60 V threshold, compensating for component tolerances in the divider.
+-   **555 Timer Flasher:** Uses a simple, robust 555 timer for the 5 Hz flashing signal instead of a microcontroller, reducing complexity and potential failure modes.
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+**Safety & Setup:**
+-   Ensure HV and LV systems share appropriate reference grounding.
+-   **Wear appropriate PPE** and follow all high-voltage safety procedures.
+
+**1. Bench HV Simulation:**
+-   Use a controllable DC power supply (~100 V) to simulate HV input.
+-   Connect supply to `HighVoltage+` / `HighVoltage−`.
+
+**2. Threshold Calibration:**
+-   Start from 0 V and slowly raise the HV supply.
+-   Observe the AMBER LED.
+-   When the LED begins flashing, check the supply voltage. Adjust **RV1** so the LED starts flashing at exactly **60 V**.
+
+**3. Range & Stress Check:**
+-   Sweep the supply voltage across its usable range (0 V → Max).
+-   Verify the LED only flashes above the threshold.
+-   Check for signs of overheating (smell, hot components).
+
+**4. System Integration:**
+-   Connect RTM to the actual tractive system HV.
+-   Turn HV on/off. Confirm the LED flashes when HV > 60 V and turns off otherwise.
+
+**5. Compliance Check:**
+-   Verify the AMBER LED color, flash rate (~5 Hz), and duty cycle meet FSAE specifications.
+
+#### Notes for Iteration
+> _To be completed._
 
 </details>
 

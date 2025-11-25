@@ -65,6 +65,7 @@ Switches</a></li>
 <ul>
 <li><a href="#tractive-system-status-indicator">Tractive System Status
 Indicator</a></li>
+<li><a href="#ts-rtm">TS RTM (Ready-to-Move)</a></li>
 <li><a href="#ready-to-drive-sound">Ready-to-Drive Sound</a></li>
 <li><a href="#dashboard--displays">Dashboard &amp; Displays</a></li>
 <li><a href="#accelerator-pedal-position-sensors">Accelerator Pedal
@@ -194,6 +195,7 @@ accelerator, wheel speed, etc.).</p>
 <ul>
 <li><a href="#tractive-system-status-indicator">Tractive System Status
 Indicator</a></li>
+<li><a href="#ts-rtm">TS RTM (Ready-to-Move)</a></li>
 <li><a href="#ready-to-drive-sound">Ready-to-Drive Sound</a></li>
 <li><a href="#dashboard--displays">Dashboard &amp; Displays</a></li>
 <li><a href="#accelerator-pedal-position-sensors">Accelerator Pedal
@@ -646,29 +648,73 @@ seconds</strong> for every scenario.</p>
 <p>Provide thresholds, logic flow, and fault-handling steps that ensure
 throttle/brake conflicts are mitigated.</p>
 <h4 id="overview-7">Overview</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<p>The <strong>Brake System Plausibility Device (BSPD)</strong> is a
+fully analog, non-programmable safety circuit that monitors the brake
+sensor and a current sensor. It asserts a <strong>BSPD_FAULT</strong>
+output when it detects unsafe or implausible conditions.</p>
+<p>The circuit is partitioned into four main stages: 1. <strong>Stage 1
+– Open Circuit Detection:</strong> Detects if sensor signals indicate an
+open circuit or broken wire. 2. <strong>Stage 2 – Short Circuit
+Detection:</strong> Intended to detect shorted sensor lines. <em>(Note:
+Current implementation likely needs redesign).</em> 3. <strong>Stage 3 –
+Hard Brake Detection:</strong> Detects simultaneous high braking and
+high current (acceleration) signals. 4. <strong>Stage 4 – Logic and
+I/O:</strong> ORs all faults, inverts the signal, and drives the
+open-drain fault output.</p>
+<p>The design relies on comparators, logic gates, and discrete
+passives—rather than firmware—to strictly meet non-programmability and
+transparency requirements.</p>
 <h4 id="functionality-7">Functionality</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<p><strong>Inputs:</strong> - <strong>Brake Sensor:</strong> Analog
+input representing brake pedal position (assumed 0–5V range). -
+<strong>Current Sensor:</strong> Analog input representing
+motor/inverter current or throttle-related current (assumed 0–5V
+range).</p>
+<p><strong>Output:</strong> - <strong>BSPD_FAULT:</strong> (Connector
+J1) - <em>Normal:</em> High-impedance (open-drain); pulled up
+externally. - <em>Fault:</em> Driven logic LOW, indicating a safety
+violation.</p>
+<p><strong>Fault Conditions Addressed:</strong> - <strong>Open-Circuit
+(Stage 1):</strong> Monitors brake/current signals for disconnects. -
+<strong>Short-Circuit (Stage 2):</strong> Monitors for shorts (requires
+validation/redesign). - <strong>Hard Brake (Stage 3):</strong> Triggers
+if both Brake and Current signals exceed thresholds simultaneously. Uses
+an RC filter (~70ms time constant) to ignore brief transients. -
+<strong>Aggregation (Stage 4):</strong> Combines all faults; asserts
+active-low output on BSPD_FAULT.</p>
 <h4 id="system-block-diagram-7">System Block Diagram</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="schematic-pcb-5">Schematic / PCB</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<figure>
+<img src="BuildBookSupport/BuildBookImages/BSPDSchematic.png"
+alt="BSPD Schematic" />
+<figcaption aria-hidden="true">BSPD Schematic</figcaption>
+</figure>
 <h4 id="subcomponents-7">Subcomponents</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="key-design-decisions-7">Key Design Decisions</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<ul>
+<li><strong>Fully Analog / Non-Programmable:</strong> Implemented
+entirely with comparators and discrete logic for robustness and rule
+compliance.</li>
+<li><strong>Stage-Based Architecture:</strong> Modular design (Open,
+Short, Hard Brake) simplifies debugging; logical OR ensures any single
+fault triggers safety.</li>
+<li><strong>Adjustable Thresholds:</strong> Four potentiometers allow
+fine-tuning of reference voltages for Open/Short/Brake-High/Current-High
+thresholds. Documentation advises using a “detection margin” to back off
+setpoints.</li>
+<li><strong>RC Filtering:</strong> A ~70ms RC time constant on the Hard
+Brake output prevents false positives from noise or transient
+overlaps.</li>
+<li><strong>Open-Drain Output:</strong> Drives low on fault, floating
+otherwise—ideal for OR-ing multiple open-drain signals in a shared
+shutdown chain.</li>
+</ul>
 <h4 id="mechanical-interface-7">Mechanical Interface</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -678,9 +724,13 @@ throttle/brake conflicts are mitigated.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="notes-for-iteration-7">Notes for Iteration</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<ul>
+<li><strong>Potentiometer Robustness:</strong> Safety thresholds depend
+on wiper positions. Consider replacing single pots with fixed resistor
+networks + small trimmers to reduce failure risk.</li>
+<li><strong>Test Points:</strong> Add clearly labeled test pads for
+reference voltages on the PCB silkscreen.</li>
+</ul>
 </details>
 <div id="battery-management-system">
 
@@ -929,6 +979,115 @@ as fuses, TVS diodes, and capacitors.</li>
 consumption to improve overall efficiency.</li>
 </ul>
 </details>
+<div id="ts-rtm">
+
+</div>
+<details>
+<summary>
+<strong>TS RTM (Ready-to-Move)</strong>
+</summary>
+<p>The TS RTM board is a high-voltage monitor and indicator that signals
+when the tractive system is energized (&gt;60V).</p>
+<h4 id="overview-13">Overview</h4>
+<p>The <strong>TS RTM (Tractive System Ready-To-Move)</strong> board is
+a critical safety indicator. Its primary job is to monitor the
+high-voltage (HV) bus and drive a flashing AMBER indicator (and a
+speaker Ready to Move Sound) whenever the voltage exceeds <strong>60
+V</strong>. This warns anyone near the vehicle that the tractive system
+is energized.</p>
+<p>Crucially, it maintains <strong>galvanic isolation</strong> between
+the high-voltage domain and the low-voltage indicator/logic domain,
+using an isolated 12V–12V DC-DC converter and an optocoupler.</p>
+<h4 id="functionality-13">Functionality</h4>
+<p><strong>Inputs:</strong> - <strong>HighVoltage+ /
+HighVoltage−:</strong> High-voltage sense inputs (up to ≈460 V). -
+<strong>12V:</strong> Low-voltage supply input (GLV 12 V). -
+<strong>GND:</strong> Low-voltage ground.</p>
+<p><strong>Outputs:</strong> - <strong>AMBER LED:</strong> Main visual
+indicator, designed to flash at ~5 Hz when HV &gt; 60 V. -
+<strong>SPEAKER:</strong> Intended audible output (currently not
+implemented; may rely solely on AMBER LED).</p>
+<p><strong>Behavior:</strong> 1. <strong>Scaling:</strong> The HV input
+is scaled down by a resistive divider (approx. 460V → 12V). 2.
+<strong>Comparison:</strong> A comparator checks this scaled voltage
+(<span
+class="math inline"><em>V</em><sub><em>I</em><em>N</em></sub></span>)
+against a bias reference (<span
+class="math inline"><em>V</em><sub><em>B</em><em>I</em><em>A</em><em>S</em></sub></span>)
+set by a potentiometer. 3. <strong>Trigger:</strong> - If <span
+class="math inline"><em>V</em><sub><em>I</em><em>N</em></sub> &gt; <em>V</em><sub><em>B</em><em>I</em><em>A</em><em>S</em></sub></span>
+(interpreted as HV &gt; 60 V): - Comparator output goes HIGH. - NMOS
+network turns on and drives an optocoupler. 4.
+<strong>Indication:</strong> The optocoupler triggers a 555 timer on the
+isolated low-voltage side. The 555 is configured as an astable
+oscillator (~5 Hz), which flashes the AMBER LED.</p>
+<h4 id="system-block-diagram-13">System Block Diagram</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="schematic-pcb-9">Schematic / PCB</h4>
+<figure>
+<img src="BuildBookSupport/BuildBookImages/TSRTMSchematic.png"
+alt="TS RTM Schematic" />
+<figcaption aria-hidden="true">TS RTM Schematic</figcaption>
+</figure>
+<figure>
+<img src="BuildBookSupport/BuildBookImages/TSRTMPCB.png"
+alt="TS RTM PCB" />
+<figcaption aria-hidden="true">TS RTM PCB</figcaption>
+</figure>
+<h4 id="subcomponents-13">Subcomponents</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="key-design-decisions-13">Key Design Decisions</h4>
+<ul>
+<li><strong>60 V Threshold:</strong> The voltage divider and comparator
+trip point are tuned so the indicator triggers exactly when HV exceeds
+60 V, per safety regulations.</li>
+<li><strong>High-Value Resistive Divider:</strong> Uses <strong>540
+kΩ</strong> resistors to minimize current draw from the HV bus and keep
+power dissipation safely within rating (0.25 W), even at several hundred
+volts.</li>
+<li><strong>Strong Isolation Strategy:</strong> Combines an isolated
+12V–12V DC-DC converter (PS1) with an optocoupler (4N35) to ensure the
+HV domain is doubly isolated from the LV indicator circuitry.</li>
+<li><strong>Adjustable Bias:</strong> A potentiometer (RV1) allows field
+calibration of the exact 60 V threshold, compensating for component
+tolerances in the divider.</li>
+<li><strong>555 Timer Flasher:</strong> Uses a simple, robust 555 timer
+for the 5 Hz flashing signal instead of a microcontroller, reducing
+complexity and potential failure modes.</li>
+</ul>
+<h4 id="mechanical-interface-13">Mechanical Interface</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="testing-instructions-13">Testing Instructions</h4>
+<p><strong>Safety &amp; Setup:</strong> - Ensure HV and LV systems share
+appropriate reference grounding. - <strong>Wear appropriate PPE</strong>
+and follow all high-voltage safety procedures.</p>
+<p><strong>1. Bench HV Simulation:</strong> - Use a controllable DC
+power supply (~100 V) to simulate HV input. - Connect supply to
+<code>HighVoltage+</code> / <code>HighVoltage−</code>.</p>
+<p><strong>2. Threshold Calibration:</strong> - Start from 0 V and
+slowly raise the HV supply. - Observe the AMBER LED. - When the LED
+begins flashing, check the supply voltage. Adjust <strong>RV1</strong>
+so the LED starts flashing at exactly <strong>60 V</strong>.</p>
+<p><strong>3. Range &amp; Stress Check:</strong> - Sweep the supply
+voltage across its usable range (0 V → Max). - Verify the LED only
+flashes above the threshold. - Check for signs of overheating (smell,
+hot components).</p>
+<p><strong>4. System Integration:</strong> - Connect RTM to the actual
+tractive system HV. - Turn HV on/off. Confirm the LED flashes when HV
+&gt; 60 V and turns off otherwise.</p>
+<p><strong>5. Compliance Check:</strong> - Verify the AMBER LED color,
+flash rate (~5 Hz), and duty cycle meet FSAE specifications.</p>
+<h4 id="notes-for-iteration-13">Notes for Iteration</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+</details>
 <div id="ready-to-drive-sound">
 
 </div>
@@ -938,52 +1097,6 @@ consumption to improve overall efficiency.</li>
 </summary>
 <p>Detail the audio hardware, trigger logic, and timing that signals
 TS-ready status to the driver.</p>
-<h4 id="overview-13">Overview</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="functionality-13">Functionality</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="system-block-diagram-13">System Block Diagram</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="schematic-pcb-9">Schematic / PCB</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="subcomponents-13">Subcomponents</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="key-design-decisions-13">Key Design Decisions</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="mechanical-interface-13">Mechanical Interface</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="testing-instructions-13">Testing Instructions</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="notes-for-iteration-13">Notes for Iteration</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-</details>
-<div id="dashboard--displays">
-
-</div>
-<details>
-<summary>
-<strong>Dashboard &amp; Displays</strong>
-</summary>
-<p>Outline display hardware, UI layout, data logging, and firmware hooks
-to the CCM.</p>
 <h4 id="overview-14">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1021,15 +1134,15 @@ to the CCM.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="accelerator-pedal-position-sensors">
+<div id="dashboard--displays">
 
 </div>
 <details>
 <summary>
-<strong>Accelerator Pedal Position Sensors</strong>
+<strong>Dashboard &amp; Displays</strong>
 </summary>
-<p>Document redundant APPS channels, calibration process, and
-plausibility checks.</p>
+<p>Outline display hardware, UI layout, data logging, and firmware hooks
+to the CCM.</p>
 <h4 id="overview-15">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1039,6 +1152,10 @@ plausibility checks.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="system-block-diagram-15">System Block Diagram</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="schematic-pcb-11">Schematic / PCB</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
@@ -1063,15 +1180,15 @@ plausibility checks.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="central-control-module">
+<div id="accelerator-pedal-position-sensors">
 
 </div>
 <details>
 <summary>
-<strong>Central Control Module</strong>
+<strong>Accelerator Pedal Position Sensors</strong>
 </summary>
-<p>Capture firmware responsibilities, CAN interface details, and power
-sequencing logic.</p>
+<p>Document redundant APPS channels, calibration process, and
+plausibility checks.</p>
 <h4 id="overview-16">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1081,10 +1198,6 @@ sequencing logic.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="system-block-diagram-16">System Block Diagram</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
-<h4 id="schematic-pcb-11">Schematic / PCB</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
@@ -1109,15 +1222,15 @@ sequencing logic.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="sensor-networks">
+<div id="central-control-module">
 
 </div>
 <details>
 <summary>
-<strong>Sensor Networks</strong>
+<strong>Central Control Module</strong>
 </summary>
-<p>List CAN IDs, sampling rates, and critical signals (brakes, wheel
-speed, steering, etc.) that inform driver feedback.</p>
+<p>Capture firmware responsibilities, CAN interface details, and power
+sequencing logic.</p>
 <h4 id="overview-17">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1155,19 +1268,15 @@ speed, steering, etc.) that inform driver feedback.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<hr />
-<h2 id="harnessing-and-power-distribution"><span
-style="color:#0b3d91;font-size:1.3em;">Harnessing and Power
-Distribution</span></h2>
-<div id="glv-system">
+<div id="sensor-networks">
 
 </div>
 <details>
 <summary>
-<strong>GLV System</strong>
+<strong>Sensor Networks</strong>
 </summary>
-<p>Describe GLV battery specs, protection circuitry, grounding strategy,
-and maintenance notes.</p>
+<p>List CAN IDs, sampling rates, and critical signals (brakes, wheel
+speed, steering, etc.) that inform driver feedback.</p>
 <h4 id="overview-18">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1205,15 +1314,19 @@ and maintenance notes.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="power-distribution-board">
+<hr />
+<h2 id="harnessing-and-power-distribution"><span
+style="color:#0b3d91;font-size:1.3em;">Harnessing and Power
+Distribution</span></h2>
+<div id="glv-system">
 
 </div>
 <details>
 <summary>
-<strong>Power Distribution Board</strong>
+<strong>GLV System</strong>
 </summary>
-<p>Document outputs, fuse/CB sizing, current sensing, and diagnostic
-interfaces.</p>
+<p>Describe GLV battery specs, protection circuitry, grounding strategy,
+and maintenance notes.</p>
 <h4 id="overview-19">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1251,15 +1364,15 @@ interfaces.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="can-bus-communication">
+<div id="power-distribution-board">
 
 </div>
 <details>
 <summary>
-<strong>CAN Bus Communication</strong>
+<strong>Power Distribution Board</strong>
 </summary>
-<p>Summarize bus topology, connector standards, termination strategy,
-and debugging workflows.</p>
+<p>Document outputs, fuse/CB sizing, current sensing, and diagnostic
+interfaces.</p>
 <h4 id="overview-20">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1297,15 +1410,15 @@ and debugging workflows.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<div id="subsystem-wiring">
+<div id="can-bus-communication">
 
 </div>
 <details>
 <summary>
-<strong>Subsystem Wiring</strong>
+<strong>CAN Bus Communication</strong>
 </summary>
-<p>Capture harness segmentation, labeling conventions, strain relief
-methods, and shielding or twisted-pair requirements.</p>
+<p>Summarize bus topology, connector standards, termination strategy,
+and debugging workflows.</p>
 <h4 id="overview-21">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1315,6 +1428,10 @@ methods, and shielding or twisted-pair requirements.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="system-block-diagram-21">System Block Diagram</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="schematic-pcb-16">Schematic / PCB</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
@@ -1339,19 +1456,15 @@ methods, and shielding or twisted-pair requirements.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 </details>
-<hr />
-<h2 id="cooling"><span
-style="color:#0b3d91;font-size:1.3em;">Cooling</span></h2>
-<div id="cooling-components">
+<div id="subsystem-wiring">
 
 </div>
 <details>
 <summary>
-<strong>Cooling Components</strong>
+<strong>Subsystem Wiring</strong>
 </summary>
-<p>List pumps, radiators, manifolds, and sensors dedicated to
-electronics cooling. Include control logic, coolant specifications, and
-inspection intervals.</p>
+<p>Capture harness segmentation, labeling conventions, strain relief
+methods, and shielding or twisted-pair requirements.</p>
 <h4 id="overview-22">Overview</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
@@ -1381,6 +1494,52 @@ inspection intervals.</p>
 <p><em>To be completed.</em></p>
 </blockquote>
 <h4 id="notes-for-iteration-22">Notes for Iteration</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+</details>
+<hr />
+<h2 id="cooling"><span
+style="color:#0b3d91;font-size:1.3em;">Cooling</span></h2>
+<div id="cooling-components">
+
+</div>
+<details>
+<summary>
+<strong>Cooling Components</strong>
+</summary>
+<p>List pumps, radiators, manifolds, and sensors dedicated to
+electronics cooling. Include control logic, coolant specifications, and
+inspection intervals.</p>
+<h4 id="overview-23">Overview</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="functionality-23">Functionality</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="system-block-diagram-23">System Block Diagram</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="subcomponents-23">Subcomponents</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="key-design-decisions-23">Key Design Decisions</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="mechanical-interface-23">Mechanical Interface</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="testing-instructions-23">Testing Instructions</h4>
+<blockquote>
+<p><em>To be completed.</em></p>
+</blockquote>
+<h4 id="notes-for-iteration-23">Notes for Iteration</h4>
 <blockquote>
 <p><em>To be completed.</em></p>
 </blockquote>
