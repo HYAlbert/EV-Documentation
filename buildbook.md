@@ -395,10 +395,28 @@ Map the complete safety loop path, including connectors, voltage levels, and tri
 Explain the latching logic, reset behavior, and compliance considerations per FSAE rules.
 
 #### Overview
-> _To be completed._
+The shutdown latch circuit is a safety-critical board that opens the high-voltage tractive system shutdown chain when a fault is detected or a shutdown switch is actuated. It acts as a gatekeeper within the larger shutdown system, implementing three detection stages in series:
+
+1.  **BSPD** (Brake System Plausibility Device) fault detection
+2.  **IMD** (Insulation Monitoring Device) fault detection
+3.  **BMS** (Battery Management System) fault detection
+
+Each stage can independently interrupt the daisy-chained shutdown line. This ensures that **any single fault** forces the tractive system off, protecting the driver, team, and vehicle from high-voltage hazards.
 
 #### Functionality
-> _To be completed._
+**Logical Behavior:**
+-   **Normal Operation:** With GLVMS applied and no faults present, all three stages energize their respective relays. This closes the contacts, maintaining continuity through the shutdown daisy chain to the inertial switch.
+-   **Fault Condition:** If any of the monitored systems (BSPD, IMD, or BMS) enters a "fault" state, its corresponding stage de-energizes its relay. This opens that segment of the chain, breaking the tractive system shutdown loop.
+-   **Manual Control:** Each stage includes a manual shutdown/reset switch and debug LEDs for visual indication and testing.
+
+**Inputs:**
+-   **BSPD FAULT:** Open-drain; active when line floats (Normal: GND, Triggered: floating).
+-   **IMD FAULT:** Push-pull; active low to GND (Normal: 12V, Triggered: GND).
+-   **BMS FAULT:** Open-drain; active when line floats (Normal: GND, Triggered: floating).
+-   **GLVMS:** GLV supply / enable input powering the shutdown circuit.
+
+**Output:**
+-   **Inertial Switch Output:** The signal passed to the next stage of the shutdown daisy chain.
 
 #### System Block Diagram
 > _To be completed._
@@ -410,13 +428,31 @@ Explain the latching logic, reset behavior, and compliance considerations per FS
 > _To be completed._
 
 #### Key Design Decisions
-> _To be completed._
+-   **Three-Stage Daisy-Chain Architecture:** BSPD, IMD, and BMS monitoring are independent yet logically ANDed in series. A fault in any one stage breaks the entire chain.
+-   **Relays as Safety Elements:** Uses DPST NO (Double Pole Single Throw, Normally Open) relays for each stage to provide clear galvanic isolation and redundant contacts/routing options. This mechanical separation is ideal for safety-critical applications.
+-   **Mixed Fault Signaling:** Designed to handle disparate signaling standards—IMD’s push-pull (12V/GND) vs. BSPD/BMS’s open-drain (GND/Float)—and consistently trigger the relays.
+-   **Protection:** Flyback diodes on each relay coil prevent high-voltage spikes that could damage adjacent circuitry or cause false logic triggers.
+-   **Debugability:** Includes per-stage debug LEDs and clearly labeled test points (e.g., DEBUG 1A/1B) to simplify bring-up and verify continuity/timing.
 
 #### Mechanical Interface
 > _To be completed._
 
 #### Testing Instructions
-> _To be completed._
+**1. Fault Input Verification**
+For each fault source (IMD, BMS, BSPD), perform the following:
+1.  **Connect Input:** Attach the relevant fault source to its input pin.
+2.  **Verify Logic:** Measure voltage at the relay coil to confirm the circuit correctly interprets the fault signal (Normal vs. Fault).
+3.  **Check Indicators:** Confirm the debug LED turns ON/OFF as expected.
+4.  **Verify Continuity:**
+    -   *No Fault:* Check continuity across the DEBUG test points (e.g., DEBUG 1A ↔ 1B). The circuit should be closed.
+    -   *Fault Injected:* Force a fault (e.g., disconnect sensor or trip IMD). Confirm the relay opens and continuity is broken.
+
+**2. Timing Validation**
+1.  **Setup:** Power the board (GLVMS) so the shutdown chain is closed.
+2.  **Trigger Fault:** Instantly apply a fault condition.
+3.  **Measure Latency:** Record the time from fault assertion to the moment the relay contacts open (breaking the chain).
+4.  **Repeat:** Run this test at least 5 times for each fault source (BSPD, IMD, BMS) to get an average.
+5.  **Pass Criteria:** The relay opening time must be **< 5 seconds** for every scenario.
 
 #### Notes for Iteration
 > _To be completed._
