@@ -174,6 +174,7 @@ Detailed documentation for each area lives in the dedicated sections that follow
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Operations</span>
 
+<div id="accumulator-battery-pack"></div>
 <details>
 <summary><strong>Accumulator Battery Pack</strong></summary>
 
@@ -208,6 +209,7 @@ Document pack layout, cell chemistry, critical sensors, and how tractive and GLV
 
 </details>
 
+<div id="precharge--discharge-circuit"></div>
 <details>
 <summary><strong>Precharge / Discharge Circuit</strong></summary>
 
@@ -248,6 +250,7 @@ The Precharge Board manages the critical startup sequence connecting high voltag
 
 </details>
 
+<div id="high-voltage-power-delivery-components"></div>
 <details>
 <summary><strong>High-Voltage Power Delivery Components</strong></summary>
 
@@ -279,6 +282,7 @@ List contactors, isolation relays, HV cabling, shielding, and any inline measure
 
 </details>
 
+<div id="inverter"></div>
 <details>
 <summary><strong>Inverter</strong></summary>
 
@@ -313,6 +317,7 @@ Summarize inverter model, configuration parameters, CAN controls, and integratio
 
 </details>
 
+<div id="motor"></div>
 <details>
 <summary><strong>Motor</strong></summary>
 
@@ -348,6 +353,7 @@ Include nameplate data, sensor feedback (resolver/Halls), cooling needs, and mec
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Tractive System Safety</span>
 
+<div id="shutdown-system"></div>
 <details>
 <summary><strong>Shutdown System</strong></summary>
 
@@ -382,6 +388,7 @@ Map the complete safety loop path, including connectors, voltage levels, and tri
 
 </details>
 
+<div id="shutdown-latch"></div>
 <details>
 <summary><strong>Shutdown Latch</strong></summary>
 
@@ -416,6 +423,7 @@ Explain the latching logic, reset behavior, and compliance considerations per FS
 
 </details>
 
+<div id="brake-system-plausibility-device"></div>
 <details>
 <summary><strong>Brake System Plausibility Device</strong></summary>
 
@@ -450,6 +458,7 @@ Provide thresholds, logic flow, and fault-handling steps that ensure throttle/br
 
 </details>
 
+<div id="battery-management-system"></div>
 <details>
 <summary><strong>Battery Management System</strong></summary>
 
@@ -484,6 +493,7 @@ Document pack monitoring, balancing strategy, CAN messaging, and fault escalatio
 
 </details>
 
+<div id="insulation-monitoring-device"></div>
 <details>
 <summary><strong>Insulation Monitoring Device</strong></summary>
 
@@ -518,6 +528,7 @@ Capture IMD thresholds, self-test requirements, and how faults propagate to TSSI
 
 </details>
 
+<div id="emergency-stops--switches"></div>
 <details>
 <summary><strong>Emergency Stops & Switches</strong></summary>
 
@@ -549,6 +560,7 @@ List mechanical locations, wiring diagrams, and inspection steps for both cockpi
 
 </details>
 
+<div id="interlocks"></div>
 <details>
 <summary><strong>Interlocks</strong></summary>
 
@@ -584,6 +596,7 @@ Describe service interlocks (TSMS, GLV enable, lid switches) and how they guaran
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Driver Interface</span>
 
+<div id="tractive-system-status-indicator"></div>
 <details>
 <summary><strong>Tractive System Status Indicator</strong></summary>
 
@@ -624,6 +637,7 @@ The Tractive System Status Indicator (TSSI) provides visual feedback on the safe
 
 </details>
 
+<div id="ready-to-drive-sound"></div>
 <details>
 <summary><strong>Ready-to-Drive Sound</strong></summary>
 
@@ -658,6 +672,7 @@ Detail the audio hardware, trigger logic, and timing that signals TS-ready statu
 
 </details>
 
+<div id="dashboard--displays"></div>
 <details>
 <summary><strong>Dashboard & Displays</strong></summary>
 
@@ -692,6 +707,7 @@ Outline display hardware, UI layout, data logging, and firmware hooks to the CCM
 
 </details>
 
+<div id="accelerator-pedal-position-sensors"></div>
 <details>
 <summary><strong>Accelerator Pedal Position Sensors</strong></summary>
 
@@ -723,6 +739,7 @@ Document redundant APPS channels, calibration process, and plausibility checks.
 
 </details>
 
+<div id="central-control-module"></div>
 <details>
 <summary><strong>Central Control Module</strong></summary>
 
@@ -757,6 +774,7 @@ Capture firmware responsibilities, CAN interface details, and power sequencing l
 
 </details>
 
+<div id="sensor-networks"></div>
 <details>
 <summary><strong>Sensor Networks</strong></summary>
 
@@ -795,6 +813,7 @@ List CAN IDs, sampling rates, and critical signals (brakes, wheel speed, steerin
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Harnessing and Power Distribution</span>
 
+<div id="glv-system"></div>
 <details>
 <summary><strong>GLV System</strong></summary>
 
@@ -829,6 +848,7 @@ Describe GLV battery specs, protection circuitry, grounding strategy, and mainte
 
 </details>
 
+<div id="power-distribution-board"></div>
 <details>
 <summary><strong>Power Distribution Board</strong></summary>
 
@@ -863,6 +883,7 @@ Document outputs, fuse/CB sizing, current sensing, and diagnostic interfaces.
 
 </details>
 
+<div id="can-bus-communication"></div>
 <details>
 <summary><strong>CAN Bus Communication</strong></summary>
 
@@ -897,6 +918,7 @@ Summarize bus topology, connector standards, termination strategy, and debugging
 
 </details>
 
+<div id="subsystem-wiring"></div>
 <details>
 <summary><strong>Subsystem Wiring</strong></summary>
 
@@ -932,6 +954,7 @@ Capture harness segmentation, labeling conventions, strain relief methods, and s
 
 ## <span style="color:#0b3d91;font-size:1.3em;">Cooling</span>
 
+<div id="cooling-components"></div>
 <details>
 <summary><strong>Cooling Components</strong></summary>
 
