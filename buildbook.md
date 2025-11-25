@@ -256,8 +256,8 @@ graph TD
         TS --> K3
         K3 -- Precharge Path --> P_STATE[Precharge]
         K3 -- Discharge Path --> D_STATE[Discharge]
-        P_STATE --> TS
-        D_STATE --> TS
+        P_STATE --> ACC
+        D_STATE --> ACC
     end
 
     subgraph Control [Control Logic]
