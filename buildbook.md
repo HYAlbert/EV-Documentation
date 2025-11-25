@@ -218,28 +218,48 @@ Document pack layout, cell chemistry, critical sensors, and how tractive and GLV
 Capture resistor sizing, timing logic, controller firmware, and test procedures that verify current ramps and discharge compliance.
 
 #### Overview
-The Precharge Board manages the critical startup sequence connecting high voltage (HV) from the accumulator to the inverter. Its primary purpose is to prevent massive inrush currents—which could weld contactors or damage components—by slowly charging the inverter’s large DC-link capacitors before the main Accumulator Isolation Relays (AIRs) close.
+The Precharge Board (PCC) manages the critical startup sequence connecting high voltage (HV) from the accumulator to the inverter. Its primary purpose is to prevent massive inrush currents—which could weld contactors or damage components—by slowly charging the inverter’s large DC-link capacitors before the main Accumulator Isolation Relays (AIRs) close.
+
+The PCC handles both **precharge** and **discharge** functions on a single board. It is a microcontroller-based controller that measures accumulator and tractive-system (TS) bus voltages, decides system state, and controls the precharge/discharge relays.
 
 #### Functionality
-**Startup Sequence:**
-1.  **Initialization:** The car powers on; the PDB provides 12V to the system, and the Central Control Module (CCM) initiates communication via CAN.
-2.  **Safety Check:** The Manual Service Disconnect (MSD) must be closed, and the Safety Daisy Chain (Shutdown Loop) must be intact to enable the board.
-3.  **Voltage Monitoring:** The board continuously measures both the Accumulator voltage and the Tractive System (inverter) voltage.
-4.  **Precharge Phase:** The board energizes the precharge relay. Current flows through a limiting resistor, gently charging the inverter capacitors.
-5.  **Connection Completion:** Once the inverter voltage reaches ~90–95% of the accumulator voltage, the board signals the main AIRs to close.
-6.  **Ready State:** The HV-IL sequence completes, fully energizing the Tractive System for operation.
+**Voltage Measurement & Filtering:**
+The board measures Accumulator voltage and Tractive System (TS) voltage using two **voltage-to-frequency (V/F) converters**.
+1.  The V/F converters produce pulse trains where frequency corresponds to voltage.
+2.  The microcontroller counts these pulses to reconstruct the voltage values.
+3.  Readings are processed through **software low-pass filters** to reject jitter and noise before being used in control logic.
+
+**Relay & Path Control:**
+-   **IR+ Relay Control:** The microcontroller outputs a signal to drive a MOSFET, which energizes relay **K3 (IR relay)**. This closes the main precharge path to the Tractive System.
+-   **Path Selection (Precharge vs. Discharge):** A **SPDT relay**, enabled by the shutdown circuit daisy chain, selects between the precharge path and the discharge path.
+    -   **Precharge Path:** Connects the precharge resistor to slowly charge the bus.
+    -   **Discharge Path:** Connects the discharge resistor to bleed energy from the bus.
+-   **Resistors:** The network uses an effective resistance of **1000 Ω** for both precharge and discharge. These resistors are always connected whenever the shutdown circuit is live, resulting in continuous passive power draw that must be managed.
+
+**Software State Machine:**
+The system logic is driven by a finite-state machine (FSM) communicating status over CAN:
+1.  **STATE_STANDBY:** System is idle and safe.
+2.  **STATE_PRECHARGE:** Slowly charges TS bus via the precharge path. Monitors voltage rise; if too slow or if accessory voltage drops, it aborts to DISCHARGE.
+3.  **STATE_DISCHARGE:** Discharges TS bus via the discharge path. Returns to STANDBY when TS voltage ≈ 0V. Also drives `SHUTDOWN_CTRL_PIN` low to disable the system.
+4.  **STATE_ONLINE:** TS is fully charged and operational. Transitions to DISCHARGE if accessory voltage falls below threshold.
+5.  **STATE_ERROR:** Fault condition. Discharges the bus if safe, otherwise handles fault logging.
+6.  **STATE_UNDEFINED:** Initial state before valid voltage history is available.
 
 #### System Block Diagram
 > _To be completed._
 
 #### Schematic / PCB
-> _To be completed._
+![Precharge Schematic](BuildBookSupport/BuildBookImages/ChargeSchematic.png)
 
 #### Subcomponents
 > _To be completed._
 
 #### Key Design Decisions
-> _To be completed._
+-   **V/F Converters vs. ADC:** Used V/F converters for voltage measurement instead of direct ADC, likely for noise immunity or isolation considerations.
+-   **Microcontroller-Driven Sequencing:** All sequencing (standby → precharge → online → discharge) is software-defined, allowing flexible tuning of timing and thresholds.
+-   **Shared Resistor Path:** A single SPDT relay switches between precharge and discharge legs, simplifying the high-voltage path.
+-   **Software Filtering:** Jitter and noise are handled in firmware filters rather than heavy analog filtering.
+-   **Explicit Error Handling:** Distinct ERROR and UNDEFINED states aid in debugging and ensure the system fails safely.
 
 #### Mechanical Interface
 > _To be completed._
@@ -248,7 +268,12 @@ The Precharge Board manages the critical startup sequence connecting high voltag
 > _To be completed._
 
 #### Notes for Iteration
-> _To be completed._
+-   **Fix Pin Swap:** The current schematic has `B+_in` and `TS+` flipped; this must be corrected in the next board revision.
+-   **Quantify Passive Power:** Since precharge resistors are always connected when the Shutdown Circuit (SDC) is live, the continuous power dissipation must be measured and documented.
+-   **Validate 1000 Ω vs. Capacitance:** Confirm the 1000 Ω resistance provides the correct precharge time constant ($\tau$) for the actual pack capacitance.
+-   **Separate Resistors:** Consider using separate resistors for precharge and discharge to optimize each function independently.
+-   **Voltage Follower:** Use a voltage follower for better reading of TS and Accumulator voltages.
+-   **OP AMP:** Add an OP AMP after the VFC for better measurement (check VFC datasheet for sample schematic)
 
 </details>
 
@@ -672,34 +697,62 @@ Summarize LED states, logic inputs, and regulatory requirements (steady green vs
 The Tractive System Status Indicator (TSSI) provides visual feedback on the safety status of the vehicle's critical monitoring systems. Its purpose is to output a **static green LED** if both the Battery Management System (BMS) and Insulation Monitoring Device (IMD) report no faults. If either system detects a fault, the TSSI drives a **flashing red LED** (using a 555 timer) to alert the driver and team, in compliance with FSAE regulations.
 
 #### Functionality
-> _To be completed._
+**Inputs:**
+-   **IMD_FAULT:** Logic-level signal (12V = Normal, 0V = Fault).
+-   **BMS_FAULT:** Active-low/floating signal (0V or Floating = Fault); treated as active via pullup/inversion.
+-   **GLV & GND:** Low-voltage supply and reference.
+
+**Outputs:**
+-   **GREEN_LED:** On solid when **no faults** are present.
+-   **RED_LED:** Flashes at **~5 Hz** when IMD, BMS, or both report a fault.
+
+**Behavior:**
+-   **No Faults:** Input logic enables the "OK" path. Q4 drives the **Green LED ON**. The 555 timer block remains disabled (Red LED OFF).
+-   **Any Fault:** Input logic disables the Green LED drive. The 555 timer is enabled, driving the **Red LED to flash at ~5 Hz**.
+
+This logic provides a simple, rule-compliant abstraction: **Green = OK**, **Red Flashing = Fault**.
 
 #### System Block Diagram
 > _To be completed._
 
 #### Schematic / PCB
-> _To be completed._
+![TSSI Schematic](BuildBookSupport/BuildBookImages/TSSISchematic.png)
+
+![TSSI PCB](BuildBookSupport/BuildBookImages/TSSIPCB.png)
 
 #### Subcomponents
 > _To be completed._
 
 #### Key Design Decisions
--   **Logic Implementation:** Uses MOSFETs to construct an AND gate logic circuit that combines fault signals. Pull-up resistors are used for the BMS input since its voltage signal is floating.
--   **Flashing Circuit:** A 555 timer is configured to output a **5 Hz square wave with a 50% duty cycle**. This signal triggers the red LED to flash instead of remaining static, satisfying FSAE regulatory requirements for fault indication.
+-   **Simple Status Abstraction:** Compresses complex upstream fault signals (IMD/BMS) into a binary user-facing state (Green vs. Flashing Red).
+-   **Discrete NMOS Logic:** Uses discrete NMOS pairs (Q7, Q8) as an AND gate and Q1 as an inverter instead of integrated logic ICs. (Note: Future revisions may replace this with dedicated ICs for cleaner timing).
+-   **555 Timer Flasher:** Uses an LM555 timer for the 5 Hz flashing signal instead of a microcontroller, ensuring simple, non-programmable robustness.
+-   **Ground-Switching LEDs:** Both Green and Red LEDs are driven in a low-side (ground-switching) configuration.
 
 #### Mechanical Interface
 > _To be completed._
 
 #### Testing Instructions
-> _To be completed._
+**1. Fault Simulation:**
+-   **No Faults:** Assert "no-fault" on both inputs. **Result:** Solid Green LED, Red LED Off.
+-   **BMS Fault Only:** Simulate BMS fault (break wire/float). **Result:** Red LED flashes at ~5 Hz.
+-   **IMD Fault Only:** Simulate IMD fault (drive low). **Result:** Red LED flashes at ~5 Hz.
+-   **Both Faults:** Simulate simultaneous faults. **Result:** Red LED flashes at ~5 Hz.
+
+**2. Troubleshooting:**
+-   If behavior is incorrect, check the on-board debug LEDs (`DEBUG_1–3`) and measure voltages at key logic nodes (AND gate output, 555 trigger).
+
+**3. Light Output Verification:**
+-   Measure luminous output to ensure brightness meets competition visibility specifications.
 
 #### Notes for Iteration
 -   **Logic Optimization:** Switch towards a gate-induced logic system to reduce board space (replacing discrete MOSFETs) and potentially improve timing.
 -   **Simplify Logic:** Remove redundant "inverter-then-inverter" logic stages.
--   **Output Flexibility:** Add more output options beyond the current configuration.
 -   **Switching Config:** Confirm whether to continue using power-ground switching for the LEDs.
--   **Input/Output Protection:** Add safety components such as fuses, TVS diodes, and capacitors.
 -   **Efficiency:** Investigate parts with lower power consumption to improve overall efficiency.
+-   **Input Protection:** Add fuses (overcurrent), TVS diodes (ESD/surge), and Schmitt triggers on inputs to improve noise immunity and prevent false triggering.
+-   **Capacitive Filtering:** Add decoupling capacitors to inputs/outputs for better noise robustness in the vehicle environment.
+
 
 </details>
 
