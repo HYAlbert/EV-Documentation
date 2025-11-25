@@ -246,7 +246,37 @@ The system logic is driven by a finite-state machine (FSM) communicating status 
 6.  **STATE_UNDEFINED:** Initial state before valid voltage history is available.
 
 #### System Block Diagram
-> _To be completed._
+```mermaid
+graph TD
+    subgraph HV_Path [High Voltage Path]
+        ACC[Accumulator HV+]
+        TS[Tractive System HV+]
+        K3[Relay K3 (Precharge Control)]
+        SPDT[SPDT Relay (Path Select)]
+        RES[Precharge/Discharge Resistor (1000Ω)]
+        
+        ACC --> K3
+        K3 --> SPDT
+        SPDT -- Precharge Path --> RES
+        SPDT -- Discharge Path --> RES
+        RES --> TS
+    end
+
+    subgraph Control [Control Logic]
+        MCU[Microcontroller]
+        VFC1[V/F Converter (Acc Voltage)]
+        VFC2[V/F Converter (TS Voltage)]
+        
+        VFC1 -->|Frequency| MCU
+        VFC2 -->|Frequency| MCU
+        MCU -->|Control Signal| K3
+        MCU -->|Control Signal| SPDT
+    end
+
+    %% Sensing Connections
+    ACC -.- VFC1
+    TS -.- VFC2
+```
 
 #### Schematic / PCB
 ![Precharge Schematic](BuildBookSupport/BuildBookImages/ChargeSchematic.png)
