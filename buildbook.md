@@ -175,6 +175,33 @@ Document pack layout, cell chemistry, critical sensors, and how tractive and GLV
 ### Precharge / Discharge Circuit
 Capture resistor sizing, timing logic, controller firmware, and test procedures that verify current ramps and discharge compliance.
 
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
 ### High-Voltage Power Delivery Components
 List contactors, isolation relays, HV cabling, shielding, and any inline measurement devices used to deliver power downstream.
 
@@ -191,11 +218,92 @@ Include nameplate data, sensor feedback (resolver/Halls), cooling needs, and mec
 ### Shutdown System
 Map the complete safety loop path, including connectors, voltage levels, and triggers that open AIRs.
 
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
 ### Shutdown Latch
 Explain the latching logic, reset behavior, and compliance considerations per FSAE rules.
 
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
 ### Brake System Plausibility Device
 Provide thresholds, logic flow, and fault-handling steps that ensure throttle/brake conflicts are mitigated.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
 
 ### Battery Management System
 Document pack monitoring, balancing strategy, CAN messaging, and fault escalation to the shutdown loop.
@@ -216,6 +324,33 @@ Describe service interlocks (TSMS, GLV enable, lid switches) and how they guaran
 ### Tractive System Status Indicator
 Summarize LED states, logic inputs, and regulatory requirements (steady green vs flashing red).
 
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
+
 ### Ready-to-Drive Sound
 Detail the audio hardware, trigger logic, and timing that signals TS-ready status to the driver.
 
@@ -227,6 +362,33 @@ Document redundant APPS channels, calibration process, and plausibility checks.
 
 ### Central Control Module
 Capture firmware responsibilities, CAN interface details, and power sequencing logic.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
 
 ### Sensor Networks
 List CAN IDs, sampling rates, and critical signals (brakes, wheel speed, steering, etc.) that inform driver feedback.
@@ -240,6 +402,33 @@ Describe GLV battery specs, protection circuitry, grounding strategy, and mainte
 
 ### Power Distribution Board
 Document outputs, fuse/CB sizing, current sensing, and diagnostic interfaces.
+
+#### Overview
+> _To be completed._
+
+#### Functionality
+> _To be completed._
+
+#### System Block Diagram
+> _To be completed._
+
+#### Schematic / PCB
+> _To be completed._
+
+#### Subcomponents
+> _To be completed._
+
+#### Key Design Decisions
+> _To be completed._
+
+#### Mechanical Interface
+> _To be completed._
+
+#### Testing Instructions
+> _To be completed._
+
+#### Notes for Iteration
+> _To be completed._
 
 ### CAN Bus Communication
 Summarize bus topology, connector standards, termination strategy, and debugging workflows.

@@ -1,0 +1,327 @@
+<h1 id="kilozott-electronics-build-book-2025">Kilozott Electronics Build
+Book 2025</h1>
+<p><strong>Contributors:</strong> * Gabriel Schoene – ‘26
+(gabeemail@email.com) * Natalie Perrochon – ‘26
+(perrochon.natalie@gmail.com) * Albert Huang - ’27
+(alberyh1@uci.edu)</p>
+<hr />
+<h2 id="table-of-contents"><span
+style="color:#0b3d91;font-size:1.3em;">Table of Contents</span></h2>
+<details>
+<summary>
+Click to expand
+</summary>
+<ul>
+<li><a href="#team-overview">Team Overview</a>
+<ul>
+<li><a href="#history">History</a></li>
+<li><a href="#kilozott">Kilozott</a></li>
+</ul></li>
+<li><a href="#electronics-relevant-rules">Electronics-Relevant Rules</a>
+<ul>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#key-changes-for-2026">Changes for 2026</a></li>
+<li><a href="#global-relevant-rules">Important Rules</a></li>
+</ul></li>
+<li><a href="#electronics-functionality">Electronics Functionality</a>
+<ul>
+<li><a href="#system-overview">System Overview</a></li>
+<li><a href="#brief-subsystem-overview">Brief Subsystem
+Overview</a></li>
+</ul></li>
+<li><a href="#tractive-system-operations">Tractive System Operations</a>
+<ul>
+<li><a href="#accumulator-battery-pack">Accumulator Battery
+Pack</a></li>
+<li><a href="#precharge--discharge-circuit">Precharge / Discharge
+Circuit</a></li>
+<li><a href="#high-voltage-power-delivery-components">High-Voltage Power
+Delivery</a></li>
+<li><a href="#inverter">Inverter</a></li>
+<li><a href="#motor">Motor</a></li>
+</ul></li>
+<li><a href="#tractive-system-safety">Tractive System Safety</a>
+<ul>
+<li><a href="#shutdown-system">Shutdown System</a></li>
+<li><a href="#shutdown-latch">Shutdown Latch</a></li>
+<li><a href="#brake-system-plausibility-device">Brake System
+Plausibility Device</a></li>
+<li><a href="#battery-management-system">Battery Management
+System</a></li>
+<li><a href="#insulation-monitoring-device">Insulation Monitoring
+Device</a></li>
+<li><a href="#emergency-stops--switches">Emergency Stops &amp;
+Switches</a></li>
+<li><a href="#interlocks">Interlocks</a></li>
+</ul></li>
+<li><a href="#driver-interface">Driver Interface</a>
+<ul>
+<li><a href="#tractive-system-status-indicator">Tractive System Status
+Indicator</a></li>
+<li><a href="#ready-to-drive-sound">Ready-to-Drive Sound</a></li>
+<li><a href="#dashboard--displays">Dashboard &amp; Displays</a></li>
+<li><a href="#accelerator-pedal-position-sensors">Accelerator Pedal
+Position Sensors</a></li>
+<li><a href="#central-control-module">Central Control Module</a></li>
+<li><a href="#sensor-networks">Sensor Networks</a></li>
+</ul></li>
+<li><a href="#harnessing-and-power-distribution">Harnessing and Power
+Distribution</a>
+<ul>
+<li><a href="#glv-system">GLV System</a></li>
+<li><a href="#power-distribution-board">Power Distribution
+Board</a></li>
+<li><a href="#can-bus-communication">CAN Bus Communication</a></li>
+<li><a href="#subsystem-wiring">Subsystem Wiring</a></li>
+</ul></li>
+<li><a href="#cooling">Cooling</a>
+<ul>
+<li><a href="#cooling-components">Cooling Components</a></li>
+</ul></li>
+<li><a href="#appendix">Appendix</a></li>
+</ul>
+</details>
+<hr />
+<h2 id="team-overview"><span style="color:#0b3d91;font-size:1.3em;">Team
+Overview</span></h2>
+<h3 id="history">History</h3>
+<h4 id="kilozott">Kilozott</h4>
+<p>Kilozott is the competition car that was designed in the 2024-2025
+cycle.</p>
+<hr />
+<h2 id="electronics-relevant-rules"><span
+style="color:#0b3d91;font-size:1.3em;">Electronics-Relevant
+Rules</span></h2>
+<h3 id="motivation">Motivation</h3>
+<p>The car needs to be rules-compliant in order to race in the
+competition. Before the dynamic events, there are technical inspections
+that scrutinize every aspect of the car to ensure it is safe and adheres
+to the competition rules for that year. If any component fails, then the
+team is prohibited from racing. This includes a “rain test”, which
+sprays the car with water to ensure components are watertight.</p>
+<p>Kilozott’s electronics were designed based on the 2024-2025 rules.
+Changes may be needed to become compliant with 2025-2026 rules.</p>
+<p><strong>Download 2026 rules here:</strong> <a
+href="BuildBookSupport/FSAE_Rules_2026_V1.pdf">FSAE_Rules_2026_V1.pdf</a></p>
+<h3 id="key-changes-for-2026">Key Changes for 2026</h3>
+<blockquote>
+<p><strong>ACTION ITEM:</strong> Copy paste key changes and highlight
+differences. For each change explain what that might imply &amp; link
+relevant sections.</p>
+</blockquote>
+<h3 id="global-relevant-rules">Global Relevant Rules</h3>
+<p>This is not a comprehensive list but rather cherry-picked for
+convenience. These rules apply to the entire electronics system. For
+circuit specific rules, refer to the detailed documentation sections
+below.</p>
+<p>To ensure complete compliance, always refer to the comprehensive FSAE
+rulebook.</p>
+<h4 id="global-rule-1">Global Rule 1</h4>
+<blockquote>
+<p><strong>[Content Placeholder]</strong></p>
+</blockquote>
+<hr />
+<h2 id="electronics-functionality"><span
+style="color:#0b3d91;font-size:1.3em;">Electronics
+Functionality</span></h2>
+<h3 id="system-overview">System Overview</h3>
+<p>We break the electronics system down into 5 main categories that
+address different scopes of the overall functionality:</p>
+<ol type="1">
+<li>Tractive System Operations</li>
+<li>Tractive System Safety</li>
+<li>Driver Interface</li>
+<li>Harnessing and Power Distribution</li>
+<li>Cooling</li>
+</ol>
+<h3 id="brief-subsystem-overview">Brief Subsystem Overview</h3>
+<details>
+<summary>
+<strong>Tractive System Operations</strong> – high-voltage power path
+from accumulator to motor.
+</summary>
+<p>Tractive System Operations covers every component used to deliver
+tractive energy from the accumulator to the inverter and ultimately to
+the motor.</p>
+<ul>
+<li><a href="#accumulator-battery-pack">Accumulator Battery
+Pack</a></li>
+<li><a href="#precharge--discharge-circuit">Precharge / Discharge
+Circuit</a></li>
+<li><a href="#high-voltage-power-delivery-components">High-Voltage Power
+Delivery Components</a></li>
+<li><a href="#inverter">Inverter</a></li>
+<li><a href="#motor">Motor</a></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Tractive System Safety</strong> – mandated protection,
+monitoring, and shutdown circuits.
+</summary>
+<p>Tractive System Safety includes all FSAE-required hardware that
+monitors, protects, or shuts down the tractive system when a fault
+occurs.</p>
+<ul>
+<li><a href="#shutdown-system">Shutdown System</a></li>
+<li><a href="#shutdown-latch">Shutdown Latch</a></li>
+<li><a href="#brake-system-plausibility-device">Brake System
+Plausibility Device</a></li>
+<li><a href="#battery-management-system">Battery Management
+System</a></li>
+<li><a href="#insulation-monitoring-device">Insulation Monitoring
+Device</a></li>
+<li><a href="#emergency-stops--switches">Emergency Stops &amp;
+Switches</a></li>
+<li><a href="#interlocks">Interlocks</a></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Driver Interface</strong> – everything a driver touches, sees,
+or hears during operation.
+</summary>
+<p>Driver Interface spans the feedback and controls presented to the
+driver (TSSI, RTDS, dashboards, pedals, CAN-fed signals for brakes,
+accelerator, wheel speed, etc.).</p>
+<ul>
+<li><a href="#tractive-system-status-indicator">Tractive System Status
+Indicator</a></li>
+<li><a href="#ready-to-drive-sound">Ready-to-Drive Sound</a></li>
+<li><a href="#dashboard--displays">Dashboard &amp; Displays</a></li>
+<li><a href="#accelerator-pedal-position-sensors">Accelerator Pedal
+Position Sensors</a></li>
+<li><a href="#central-control-module">Central Control Module</a></li>
+<li><a href="#sensor-networks">Sensor Networks</a></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Harnessing &amp; Power Distribution</strong> – GLV power, bus
+architecture, and wiring practices.
+</summary>
+<p>This category documents low-voltage power delivery, CAN distribution,
+and subsystem wiring conventions that keep signals reliable.</p>
+<ul>
+<li><a href="#glv-system">GLV System</a></li>
+<li><a href="#power-distribution-board">Power Distribution
+Board</a></li>
+<li><a href="#can-bus-communication">CAN Bus Communication</a></li>
+<li><a href="#subsystem-wiring">Subsystem Wiring</a></li>
+</ul>
+</details>
+<details>
+<summary>
+<strong>Cooling</strong> – thermal management for electronics and
+high-power components.
+</summary>
+<p>Cooling content and component list are still being developed.</p>
+<ul>
+<li><a href="#cooling-components">Cooling Components</a> <em>(to be
+completed)</em></li>
+</ul>
+</details>
+<p>Detailed documentation for each area lives in the dedicated sections
+that follow.</p>
+<hr />
+<h2 id="tractive-system-operations"><span
+style="color:#0b3d91;font-size:1.3em;">Tractive System
+Operations</span></h2>
+<h3 id="accumulator-battery-pack">Accumulator Battery Pack</h3>
+<p>Document pack layout, cell chemistry, critical sensors, and how
+tractive and GLV domains interface. Include links to schematics, AIR
+wiring, and service procedures.</p>
+<h3 id="precharge-discharge-circuit">Precharge / Discharge Circuit</h3>
+<p>Capture resistor sizing, timing logic, controller firmware, and test
+procedures that verify current ramps and discharge compliance.</p>
+<h3 id="high-voltage-power-delivery-components">High-Voltage Power
+Delivery Components</h3>
+<p>List contactors, isolation relays, HV cabling, shielding, and any
+inline measurement devices used to deliver power downstream.</p>
+<h3 id="inverter">Inverter</h3>
+<p>Summarize inverter model, configuration parameters, CAN controls, and
+integration with the central control module.</p>
+<h3 id="motor">Motor</h3>
+<p>Include nameplate data, sensor feedback (resolver/Halls), cooling
+needs, and mechanical mounting notes.</p>
+<hr />
+<h2 id="tractive-system-safety"><span
+style="color:#0b3d91;font-size:1.3em;">Tractive System
+Safety</span></h2>
+<h3 id="shutdown-system">Shutdown System</h3>
+<p>Map the complete safety loop path, including connectors, voltage
+levels, and triggers that open AIRs.</p>
+<h3 id="shutdown-latch">Shutdown Latch</h3>
+<p>Explain the latching logic, reset behavior, and compliance
+considerations per FSAE rules.</p>
+<h3 id="brake-system-plausibility-device">Brake System Plausibility
+Device</h3>
+<p>Provide thresholds, logic flow, and fault-handling steps that ensure
+throttle/brake conflicts are mitigated.</p>
+<h3 id="battery-management-system">Battery Management System</h3>
+<p>Document pack monitoring, balancing strategy, CAN messaging, and
+fault escalation to the shutdown loop.</p>
+<h3 id="insulation-monitoring-device">Insulation Monitoring Device</h3>
+<p>Capture IMD thresholds, self-test requirements, and how faults
+propagate to TSSI/CCM.</p>
+<h3 id="emergency-stops-switches">Emergency Stops &amp; Switches</h3>
+<p>List mechanical locations, wiring diagrams, and inspection steps for
+both cockpit and external E-stops.</p>
+<h3 id="interlocks">Interlocks</h3>
+<p>Describe service interlocks (TSMS, GLV enable, lid switches) and how
+they guarantee safe access to HV hardware.</p>
+<hr />
+<h2 id="driver-interface"><span
+style="color:#0b3d91;font-size:1.3em;">Driver Interface</span></h2>
+<h3 id="tractive-system-status-indicator">Tractive System Status
+Indicator</h3>
+<p>Summarize LED states, logic inputs, and regulatory requirements
+(steady green vs flashing red).</p>
+<h3 id="ready-to-drive-sound">Ready-to-Drive Sound</h3>
+<p>Detail the audio hardware, trigger logic, and timing that signals
+TS-ready status to the driver.</p>
+<h3 id="dashboard-displays">Dashboard &amp; Displays</h3>
+<p>Outline display hardware, UI layout, data logging, and firmware hooks
+to the CCM.</p>
+<h3 id="accelerator-pedal-position-sensors">Accelerator Pedal Position
+Sensors</h3>
+<p>Document redundant APPS channels, calibration process, and
+plausibility checks.</p>
+<h3 id="central-control-module">Central Control Module</h3>
+<p>Capture firmware responsibilities, CAN interface details, and power
+sequencing logic.</p>
+<h3 id="sensor-networks">Sensor Networks</h3>
+<p>List CAN IDs, sampling rates, and critical signals (brakes, wheel
+speed, steering, etc.) that inform driver feedback.</p>
+<hr />
+<h2 id="harnessing-and-power-distribution"><span
+style="color:#0b3d91;font-size:1.3em;">Harnessing and Power
+Distribution</span></h2>
+<h3 id="glv-system">GLV System</h3>
+<p>Describe GLV battery specs, protection circuitry, grounding strategy,
+and maintenance notes.</p>
+<h3 id="power-distribution-board">Power Distribution Board</h3>
+<p>Document outputs, fuse/CB sizing, current sensing, and diagnostic
+interfaces.</p>
+<h3 id="can-bus-communication">CAN Bus Communication</h3>
+<p>Summarize bus topology, connector standards, termination strategy,
+and debugging workflows.</p>
+<h3 id="subsystem-wiring">Subsystem Wiring</h3>
+<p>Capture harness segmentation, labeling conventions, strain relief
+methods, and shielding or twisted-pair requirements.</p>
+<hr />
+<h2 id="cooling"><span
+style="color:#0b3d91;font-size:1.3em;">Cooling</span></h2>
+<h3 id="cooling-components">Cooling Components</h3>
+<p>List pumps, radiators, manifolds, and sensors dedicated to
+electronics cooling. Include control logic, coolant specifications, and
+inspection intervals.</p>
+<hr />
+<h2 id="appendix"><span
+style="color:#0b3d91;font-size:1.3em;">Appendix</span></h2>
+<h3 id="learning-resources">Learning Resources</h3>
+<ul>
+<li><strong>Useful links for brushing up on relevant topics:</strong>
+[Insert Links]</li>
+<li><strong>Rapidharness tutorial:</strong> [Link]</li>
+</ul>
