@@ -12,6 +12,32 @@ Click to expand
 </ul>
 </details>
 <hr />
+<h2 id="why-markdown"><span style="color:#0b3d91;font-size:1.3em;">Why
+Markdown?</span></h2>
+<p>We chose Markdown for this build book because it offers several
+advantages over traditional word processors:</p>
+<ol type="1">
+<li><strong>Rich Media:</strong> Can easily embed images and videos
+directly into the document.</li>
+<li><strong>Interconnectivity:</strong> Supports direct linking to
+different parts of the documentation, making navigation seamless.</li>
+<li><strong>Clean Organization:</strong> Collapsible content keeps the
+document un-cluttered and easy to browse.</li>
+<li><strong>Diagram Generation:</strong> Enables code-based generation
+of system block diagrams (see <a
+href="#precharge--discharge-circuit">Precharge / Discharge Circuit</a>
+for an example).</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Some images may currently appear blurry as
+they are placeholders. High-quality images will replace them in future
+updates.</p>
+</blockquote>
+<p>If you prefer not to work directly with Markdown, that is okay! You
+can draft your section in a Google Doc, Word document, or text file.
+Send your completed content and any original image files to Albert, and
+he will update the documentation for you.</p>
+<hr />
 <h2 id="table-of-contents"><span
 style="color:#0b3d91;font-size:1.3em;">Table of Contents</span></h2>
 <details>
@@ -343,9 +369,36 @@ safe, otherwise handles fault logging. 6.
 <strong>STATE_UNDEFINED:</strong> Initial state before valid voltage
 history is available.</p>
 <h4 id="system-block-diagram-1">System Block Diagram</h4>
-<blockquote>
-<p><em>To be completed.</em></p>
-</blockquote>
+<pre class="mermaid"><code>flowchart LR
+    %% ===== High Voltage Path =====
+    subgraph HV_Path [&quot;High Voltage Path&quot;]
+        ACC[&quot;Accumulator HV+&quot;]
+        TS[&quot;Tractive System HV+&quot;]
+        K3[&quot;Relay SPDT&quot;]
+        P_STATE[&quot;Precharge&quot;]
+        D_STATE[&quot;Discharge&quot;]
+        
+        TS --&gt; K3
+        K3 --&gt;|Precharge| P_STATE
+        K3 --&gt;|Discharge| D_STATE
+        P_STATE --&gt; ACC
+        D_STATE --&gt; ACC
+    end
+
+    %% ===== Control Logic =====
+    subgraph Control [&quot;Control Logic&quot;]
+        MCU[&quot;Microcontroller&quot;]
+        VFC1[&quot;V/F Converter ACC&quot;]
+        VFC2[&quot;V/F Converter TS&quot;]
+        
+        VFC1 --&gt;|Frequency| MCU
+        VFC2 --&gt;|Frequency| MCU
+        MCU --&gt;|Control| K3
+    end
+
+    %% Sensing (dotted connections)
+    ACC -.-&gt; VFC1
+    TS -.-&gt; VFC2</code></pre>
 <h4 id="schematic-pcb-1">Schematic / PCB</h4>
 <figure>
 <img src="BuildBookSupport/BuildBookImages/ChargeSchematic.png"

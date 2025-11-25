@@ -12,6 +12,21 @@
 
 ---
 
+## <span style="color:#0b3d91;font-size:1.3em;">Why Markdown?</span>
+
+We chose Markdown for this build book because it offers several advantages over traditional word processors:
+
+1.  **Rich Media:** Can easily embed images and videos directly into the document.
+2.  **Interconnectivity:** Supports direct linking to different parts of the documentation, making navigation seamless.
+3.  **Clean Organization:** Collapsible content keeps the document un-cluttered and easy to browse.
+4.  **Diagram Generation:** Enables code-based generation of system block diagrams (see [Precharge / Discharge Circuit](#precharge--discharge-circuit) for an example).
+
+> **Note:** Some images may currently appear blurry as they are placeholders. High-quality images will replace them in future updates.
+
+If you prefer not to work directly with Markdown, that is okay! You can draft your section in a Google Doc, Word document, or text file. Send your completed content and any original image files to Albert, and he will update the documentation for you.
+
+---
+
 ## <span style="color:#0b3d91;font-size:1.3em;">Table of Contents</span>
 
 <details>
