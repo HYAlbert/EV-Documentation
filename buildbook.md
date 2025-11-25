@@ -422,7 +422,9 @@ Each stage can independently interrupt the daisy-chained shutdown line. This ens
 > _To be completed._
 
 #### Schematic / PCB
-> _To be completed._
+![Shutdown Latch Schematic](BuildBookSupport/BuildBookImages/LatchSchematic.png)
+
+![Shutdown Latch PCB](BuildBookSupport/BuildBookImages/LatchPCB.png)
 
 #### Subcomponents
 > _To be completed._
