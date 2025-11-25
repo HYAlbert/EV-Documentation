@@ -247,32 +247,36 @@ The system logic is driven by a finite-state machine (FSM) communicating status 
 
 #### System Block Diagram
 ```mermaid
-graph TD
-    subgraph HV_Path [High Voltage Path]
-        ACC[Accumulator HV+]
-        TS[Tractive System HV+]
-        K3[Relay SPDT]
+flowchart LR
+    %% ===== High Voltage Path =====
+    subgraph HV_Path ["High Voltage Path"]
+        ACC["Accumulator HV+"]
+        TS["Tractive System HV+"]
+        K3["Relay SPDT"]
+        P_STATE["Precharge"]
+        D_STATE["Discharge"]
         
         TS --> K3
-        K3 -- Precharge Path --> P_STATE[Precharge]
-        K3 -- Discharge Path --> D_STATE[Discharge]
+        K3 -->|Precharge| P_STATE
+        K3 -->|Discharge| D_STATE
         P_STATE --> ACC
         D_STATE --> ACC
     end
 
-    subgraph Control [Control Logic]
-        MCU[Microcontroller]
-        VFC1[V/F Converter Acc Voltage]
-        VFC2[V/F Converter TS Voltage]
+    %% ===== Control Logic =====
+    subgraph Control ["Control Logic"]
+        MCU["Microcontroller"]
+        VFC1["V/F Converter ACC"]
+        VFC2["V/F Converter TS"]
         
         VFC1 -->|Frequency| MCU
         VFC2 -->|Frequency| MCU
-        MCU -->|Control Signal| K3
+        MCU -->|Control| K3
     end
 
-    %% Sensing Connections
-    ACC -.- VFC1
-    TS -.- VFC2
+    %% Sensing (dotted connections)
+    ACC -.-> VFC1
+    TS -.-> VFC2
 ```
 
 #### Schematic / PCB
