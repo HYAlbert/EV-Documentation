@@ -251,7 +251,7 @@ graph TD
     subgraph HV_Path [High Voltage Path]
         ACC[Accumulator HV+]
         TS[Tractive System HV+]
-        K3[Relay K3 (SPDT) Precharge Control]
+        K3[Relay SPDT Precharge Control]
         
         ACC --> K3
         K3 -- Precharge Path --> P_STATE[Precharge]
